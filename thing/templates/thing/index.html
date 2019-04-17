@@ -1,0 +1,458 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="utf-8">
+
+  <title>Backlog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <!-- <link href="https://fonts.googleapis.com/css?family=Work+Sans:300,400,500,700,800" rel="stylesheet"> -->
+  <!-- <link href="https://fonts.googleapis.com/css?family=Inconsolata:400,700" rel="stylesheet"> -->
+  {% load staticfiles %}
+
+  <!-- Animate.css -->
+  <link rel="stylesheet" href="{% static 'css/animate.css' %}">
+  <!-- Icomoon Icon Fonts-->
+  <link rel="stylesheet" href="{% static 'css/icomoon.css' %}">
+  <!-- Bootstrap  -->
+  <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+  <!-- Flexslider  -->
+  <link rel="stylesheet" href="{% static 'css/flexslider.css' %}">
+
+  <!-- Theme style  -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+  <!-- Modernizr JS -->
+  <script src="{% static 'js/modernizr-2.6.2.min.js' %}"></script>
+  <!-- FOR IE9 below -->
+  <!--[if lt IE 9]>
+	<script src="{% static 'js/respond.min.js' %}"></script>
+	<![endif]-->
+
+</head>
+
+<body style="background:url({% static 'images/bg.jpg' %})">
+
+  <div class="fh5co-loader"></div>
+  <div id="page">
+    <nav style="background:url({% static 'images/bg.jpg' %})" class="fh5co-nav" role="navigation">
+      <div class="top-menu">
+        <div class="container">
+          <div class="row">
+            <div class="col-xs-2">
+              <div id="fh5co-logo"><a href="index.html">Backlog<span>.</span></a></div>
+            </div>
+            <div class="col-xs-10 text-right menu-1">
+              <ul>
+                <li>
+                  <a href="">Home</a>
+                </li>
+                <!-- <li class="btn-cta"><a href="#" onClick='$("#msg_modal").modal("show");'><span>登录</span></a></li> -->
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <div id="fh5co-blog">
+      <div class="container">
+        <div class="row" id="TitleBox">
+        </div>
+        <div class="row" id="CtrlBox">
+
+        </div>
+        <div class="row" id="ThingBox">
+        </div>
+      </div>
+    </div>
+    <div id="msgBox">
+
+    </div>
+    <div class="gototop js-top">
+      <a href="#" class="js-gotop"><i class="icon-arrow-up22"></i></a>
+    </div>
+
+    <!-- jQuery -->
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <!-- jQuery Easing -->
+    <script src="{% static 'js/jquery.easing.1.3.js' %}"></script>
+    <!-- Bootstrap -->
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <!-- Waypoints -->
+    <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+    <!-- Flexslider -->
+    <script src="{% static 'js/jquery.flexslider-min.js' %}"></script>
+    <!-- Main -->
+    <script src="{% static 'js/react.js' %}"></script>
+    <script src="{% static 'js/react-dom.js' %}"></script>
+    <script src="{% static 'js/browser.min.js' %}"></script>
+    <script src="{% static 'js/PubSubJS/src/pubsub.js' %}"></script>
+    <script src="{% static 'js/njs_compile.js' %}"></script>
+    <script src="{% static 'js/cookie.min.js' %}"></script>
+    <script id="testCode" type="text/x-narrativejs">
+      // sad but true: Firefox doesn't guarantee that the specified amount of // sader but true,chrome,either. sleep->(5000);
+  </script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script type="text/babel">
+      function CurrentTime(){
+        var now = new Date();
+        var year = now.getFullYear();
+        var month = now.getMonth() + 1;
+        var day = now.getDate();
+        var hh = now.getHours();
+        var mm = now.getMinutes();
+        var ss = now.getSeconds();
+        var clock = year + "-";
+        if(month < 10)
+            clock += "0";
+        clock += month + "-";
+        if(day < 10)
+            clock += "0";
+        clock += day + " ";
+        if(hh < 10)
+            clock += "0";
+        clock += hh + ":";
+        if (mm < 10) clock += '0';
+        clock += mm + ":";
+        if(ss<10) clock+="0";
+        clock+=ss;
+        return clock;
+      }
+      let getData = function() {
+        return $.ajax({
+            url: '/thing-api/',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+
+            }
+          })
+          .fail(function() {
+            console.log("获取数据失败")
+          });
+      };
+    var deleteThing = function(id){
+      var csrftoken = Cookies.get('csrftoken')
+      return $.ajax({
+          url: '/thing-api/'+id,
+          type: 'delete',
+          dataType: 'json',
+          beforeSend: function(request) {
+            request.setRequestHeader("X-CSRFToken",csrftoken);
+         },
+          success: function(data) {
+            PubSub.publish("updateThings");
+            PubSub.publish("msgBox",{"button":true,"info":"删除事件成功"});
+          }
+        })
+        .fail(function() {
+          PubSub.publish("msgBox",{"button":true,"info":"删除事件失败,请重试"});
+        });
+    }
+    var postThing=function(data){
+      var csrftoken = Cookies.get('csrftoken')
+      data["csrfmiddlewaretoken"]=csrftoken;
+      return $.ajax({
+          url: '/thing-api/',
+          type: 'post',
+          data: data,
+          dataType: 'json',
+          success: function(data) {
+            PubSub.publish("updateThings",{update:true});
+            PubSub.publish("msgBox",{"button":true,"info":"添加事件成功"});
+          }
+        })
+        .fail(function() {
+          PubSub.publish("msgBox",{"button":true,"info":"添加事件失败,请重试"});
+        });
+    }
+    var editThing = function(data,id){
+      var csrftoken = Cookies.get('csrftoken')
+      data["csrfmiddlewaretoken"]=csrftoken;
+      return $.ajax({
+          url: '/thing-api/'+id,
+          type: 'put',
+          data: data,
+          dataType: 'json',
+          beforeSend: function(request) {
+            request.setRequestHeader("X-CSRFToken",csrftoken);
+          },
+          success: function(data) {
+            PubSub.publish("updateThings",{update:true});
+            PubSub.publish("msgBox",{"button":true,"info":"修改事件成功"});
+          }
+        })
+        .fail(function() {
+          PubSub.publish("msgBox",{"button":true,"info":"修改事件失败,请重试"});
+        });
+    }
+    var Title = React.createClass({
+      render:function(){
+        let fontStyle={
+          "color":"#1B1A1A"
+        };
+        return (<div className="col-md-8 col-md-offset-2 text-center fh5co-heading"><h2>便利贴墙</h2><p style={fontStyle}>Backlog, 小站为您提供在线备忘录功能.</p></div>);
+      }
+    })
+    var ThingBlank = React.createClass({
+      getInitialState: function() {
+        return {add: false};
+      },
+      activeAdd:function(e){
+          this.setState({add:true});
+      },
+      handleAdd:function(e){
+        let data={};
+        let name = $("#new_name").val();
+        let detail = $("#new_detail").val();
+        let type = $("#new_type").val();
+        let status = $('#new_status option:selected').val();
+        let priority = $("#new_priority option:selected").val();
+        let time = CurrentTime();
+        if(type=="")type="日常";
+        if(name=="")name="未命名";
+        if(detail==""){
+          PubSub.publish("msgBox",{"button":true,"info":"请输入事件的详细内容"});
+          return;
+        }
+        data["name"]=name;
+        data["detail"]=detail;
+        data["type"]=type;
+        data["status"]=status;
+        data["priority"]=priority;
+        data["time"]=time;
+        console.log(data);
+        postThing(data).then((data)=>{
+          console.log("数据添加成功");
+        });
+        this.setState({add:false});
+
+      },
+      render(){
+        let AddButtonStyle={
+          "color":"#42CB6E"
+        };
+        if(!this.state.add)
+          return (<div className="col-md-4" key={"new"}><div className="fh5co-blog"><div className="blog-text"><span className="posted_on">{CurrentTime()}</span><button style={AddButtonStyle} className="btn" onClick={this.activeAdd}><i className="icon-add-to-list"></i></button><h3><a href="#">新建事件</a></h3><p>新建一个备忘录事件<br/><br/></p></div></div></div>);
+        else
+          return (<div className="col-md-4" key={"new"}><div className="fh5co-blog"><div className="blog-text"><span className="posted_on">{CurrentTime()}</span><button className="btn" onClick={this.handleAdd}><i className="icon-save"></i></button>
+          <div className="form-group">
+            <input id="new_name" type="text" className="form-control" placeholder="新建事件"/>
+            <textarea className="form-control" id="new_detail"  defaultValue="新建一个备忘录事件"></textarea>
+            状态 :<select className="form-control" id="new_status"><option name="1">未完成</option><option name="2">已完成</option></select>
+            优先级 :<select className="form-control" id="new_priority"><option name="1">1</option><option name="2">2</option><option name="3">3</option><option name="4">4</option><option name="5">5</option></select><br />
+            <input id="new_type" type="text" className="form-control" placeholder="事件类型"/>
+          </div></div></div></div>);
+      }
+    })
+    var ThingItem = React.createClass({
+      getInitialState:function(){
+        return {edit:-1};
+      },
+      handleDelete:function(e,id){
+        deleteThing(id).then((data)=>{
+          console.log("success");
+        });
+      },
+      handleEdit:function(e,id){
+        console.log("edit")
+        this.setState({edit:id});
+      },
+      handlePut:function(e,id){
+        console.log(id);
+        let data={};
+        let name = $("#edit_name").val();
+        let detail = $("#edit_detail").val();
+        let type = $("#edit_type").val();
+        let status = $('#edit_status option:selected').val();
+        let priority = $("#edit_priority option:selected").val();
+        let time = CurrentTime();
+        if(type=="")type="日常";
+        if(name=="")name="未命名";
+        if(detail==""){
+          PubSub.publish("msgBox",{"button":true,"info":"请输入事件的详细内容"});
+          return;
+        }
+        data["name"]=name;
+        data["detail"]=detail;
+        data["type"]=type;
+        data["status"]=status;
+        data["priority"]=priority;
+        data["time"]=time;
+        editThing(data,id).then((data)=>{
+          console.log("数据修改成功");
+        });
+        this.setState({edit:-1});
+      },
+      handleFlag:function(e,id){
+        let data;
+        for(let i=0;i<this.props.data.length;i++){
+          if(this.props.data[i]["id"]==id){
+            data=this.props.data[i];
+            break;
+          }
+        }
+        data["status"]= (data["status"]=="未完成")?"已完成":"未完成";
+        editThing(data,id).then((data)=>{
+          console.log("数据标记成功");
+        });
+        PubSub.publish("updateThings");
+      },
+      render(){
+        let res = [];
+        let that = this;
+        let id,name,time,detail,status,priority,type;
+        let IconStyle={};
+        for(let i=0;i<this.props.data.length;i++){
+          id = this.props.data[i]["id"];
+          name = this.props.data[i]["name"];
+          time = this.props.data[i]["time"];
+          priority = this.props.data[i]["priority"];
+          status = this.props.data[i]["status"];
+          type = this.props.data[i]["type"];
+          detail = this.props.data[i]["detail"];
+
+          if(detail.length>50)
+              detail = detail.substr(0,150)+"...";
+          (function(id){
+            if(that.state.edit==id){
+              res.push(<div className="col-md-4" key={"new"}><div className="fh5co-blog"><div className="blog-text"><span className="posted_on">{time}</span><button className="btn" onClick={(ev)=>{that.handlePut(ev,id)}}><i className="icon-save"></i></button>
+              <div className="form-group">
+                <input id="edit_name" type="text" className="form-control" defaultValue={name}/>
+                <textarea className="form-control" id="edit_detail"  defaultValue={detail}></textarea>
+                状态 :<select className="form-control" id="edit_status"><option name="1">{status}</option><option name="2">{status=="未完成"?"已完成":"未完成"}</option></select>
+                优先级 :<select className="form-control" id="edit_priority"><option name="default">{priority}</option><option name="1">1</option><option name="2">2</option><option name="3">3</option><option name="4">4</option><option name="5">5</option></select><br />
+                <input id="edit_type" type="text" className="form-control" defaultValue={type}/>
+              </div></div></div></div>)
+            }else
+            res.push(<div className="col-md-4" key={id}>
+            <div className="fh5co-blog"><div className="blog-text">
+            <span className="posted_on">{time}</span>
+            <button onClick={(ev)=>{that.handleDelete(ev,id)}} className="btn btn-link" type="button">x</button>
+            <h3>{name}</h3>
+            <p>{detail}</p>
+            <ul className="stuff">
+            <li><a><i className="icon-edit" onClick={(ev)=>{that.handleEdit(ev,id);}}></i></a></li>
+            <li></li>
+            <li><label className={priority<2?"label label-primary":priority<4?"label label-warning":"label label-danger"}>{priority}</label>&nbsp;<label onClick={(ev)=>{that.handleFlag(ev,id)}} className={(status=="未完成") ? "label label-info" :(status=="已完成") ? "label label-success":"label label-default"}>{status}</label></li>
+            </ul></div></div></div>);
+          })(id)
+        }
+        return <div>{res}</div>
+      }
+    });
+    var Things = React.createClass({
+      getInitialState: function() {
+        return {
+          data: []
+        };
+      },
+      componentDidMount:function(){
+        //此时子组件都挂载好了
+        let that = this;
+        getData().then((data)=>{
+          that.setState({data:data});
+        });
+        PubSub.subscribe("updateThings",(topic,info)=>{
+          getData().then((data)=>{
+            if(info && info["ctrl"]){
+              if(info["sort"]!=undefined)
+                data=data.sort(info["sort"]);
+              if(info["filter"]!=undefined)
+                data=data.filter(info["filter"]);
+
+            }
+            that.setState({data:data});
+          });
+        });
+      },
+      render:function(){
+        return <div><ThingBlank /><ThingItem data={this.state.data} /></div>;
+      },
+    });
+    var ModalBox =React.createClass({
+      getInitialState: function() {
+        return {
+          info: "事件添加成功!",
+          update:false,
+          button:false,
+        };
+      },
+      componentDidMount:function(){
+        let that = this;
+        PubSub.subscribe("msgBox",(topic,data)=>{
+          that.setState({info:data["info"],button:data["button"]});
+          $("#msg_modal").modal("show");
+        });
+      },
+      render:function(){
+        let row=[];
+        row.push(<div key="2" className="modal-header">
+        <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+        <h4 className="modal-title" id="myModalLabel">消息提示</h4>
+        </div>);
+        row.push(<div key="3" className="modal-body">{this.state.info}</div>);
+        if(this.state.button){
+          row.push(<div key="1" className="modal-footer"><button type="button" data-dismiss="modal" className="btn btn-primary">确认</button></div>);
+        }
+        return (<div className="modal fade" id="msg_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div className="modal-dialog" role="document"><div className="modal-content">{row}</div></div></div>);
+      }
+    });
+    var ControlPanel = React.createClass({
+      getInitialState: function() {
+        return {
+          option: "排序方式",
+        };
+      },
+      handleOption:function(ev,type){
+        if(type=="ID"){
+          this.setState({option:"ID"});
+          PubSub.publish("updateThings",{"ctrl":true,"sort":function(a,b){return  a["id"]-b["id"];}});
+        }
+        if(type=="优先级"){
+          this.setState({option:"优先级"});
+          PubSub.publish("updateThings",{"ctrl":true,"sort":function(a,b){return  b["priority"]-a["priority"];}});
+        }
+        if(type=="时间"){
+          this.setState({option:"时间"});
+          PubSub.publish("updateThings",{"ctrl":true,"sort":function(a,b){return  new Date(b["time"]).valueOf()-new Date(a["time"]).valueOf();}});
+        }
+        if(type=="仅已完成"){
+          this.setState({option:"仅已完成"});
+          PubSub.publish("updateThings",{"ctrl":true,"filter":function(a){return a["status"]=="已完成"}});
+        }
+        if(type=="仅未完成"){
+          this.setState({option:"仅未完成"});
+          PubSub.publish("updateThings",{"ctrl":true,"filter":function(a){return a["status"]=="未完成"}});
+        }
+      },
+      render:function(){
+        return <div className="dropdown">
+          <button className="btn btn-default dropdown-toggle" type="button" id="sortWay" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            {this.state.option}
+            <span className="caret"></span>
+          </button>
+          <ul className="dropdown-menu" aria-labelledby="dropdownMenu1">
+            <li><a onClick={(ev)=>{this.handleOption(ev,"ID");}}>ID</a></li>
+            <li><a onClick={(ev)=>{this.handleOption(ev,"优先级");}}>优先级</a></li>
+            <li><a onClick={(ev)=>{this.handleOption(ev,"时间");}}>时间</a></li>
+            <li><a onClick={(ev)=>{this.handleOption(ev,"仅已完成");}}>仅已完成</a></li>
+            <li><a onClick={(ev)=>{this.handleOption(ev,"仅未完成");}}>仅未完成</a></li>
+          </ul>
+        </div>;
+      }
+    });
+
+    ReactDOM.render(<ControlPanel />,document.getElementById("CtrlBox"));
+    ReactDOM.render(<ModalBox />,document.getElementById("msgBox"));
+    ReactDOM.render(<Title />,document.getElementById("TitleBox"));
+    ReactDOM.render(<Things />,document.getElementById("ThingBox"));
+
+  </script>
+</body>
+
+</html>

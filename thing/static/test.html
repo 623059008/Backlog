@@ -1,0 +1,11 @@
+<div class="dropdown">
+  <button class="btn btn-default dropdown-toggle" type="button" id="sortWay" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+    {this.state.option}
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+    <li><a onClick={(ev)=>{this.handleOption(ev,"ID");}}>ID</a></li>
+    <li><a onClick={(ev)=>{this.handleOption(ev,"优先级");}}>优先级</a></li>
+    <li><a onClick={(ev)=>{this.handleOption(ev,"时间");}}>时间</a></li>
+  </ul>
+</div>
