@@ -1,5 +1,9 @@
 # 已实现功能列表
 
+> 图片可查看pdf版本
+>
+> PostgreSQL+Django rest framework + React
+
 - 增加一个待办事项
 
 ![image-20190418021343387](/Users/rentao/Library/Application Support/typora-user-images/image-20190418021343387.png)
