@@ -6,24 +6,24 @@
 
 - 增加一个待办事项
 
-![image-20190418021343387](/Users/rentao/Library/Application Support/typora-user-images/image-20190418021343387.png)
+![image-20190418021343387](./imgs/1.png)
 
 - 删除一个待办事项
 
-![image-20190418021404157](/Users/rentao/Library/Application Support/typora-user-images/image-20190418021404157.png)
+![image-20190418021404157](./imgs/2.png)
 
 - 标记一个待办事项为已完成
 
-![image-20190418021456110](/Users/rentao/Library/Application Support/typora-user-images/image-20190418021456110.png)
+![image-20190418021456110](./imgs/3.png)
 
 - 编辑一个待办事项的具体内容
 
-![image-20190418021512238](/Users/rentao/Library/Application Support/typora-user-images/image-20190418021512238.png)
+![image-20190418021512238](./imgs/4.png)
 
 - 列出所有的待办事项
 
-![image-20190418021529535](/Users/rentao/Library/Application Support/typora-user-images/image-20190418021529535.png)
+![image-20190418021529535](./imgs/5.png)
 
 - 待办事项可以设置优先级
 
-![image-20190418021549655](/Users/rentao/Library/Application Support/typora-user-images/image-20190418021549655.png)
+![image-20190418021549655](./imgs/6.png)
